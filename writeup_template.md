@@ -1,8 +1,3 @@
-##Writeup Template
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
-
----
-
 **Vehicle Detection Project**
 
 The goals / steps of this project are the following:
@@ -14,95 +9,127 @@ The goals / steps of this project are the following:
 * Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
-[//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
-[video1]: ./project_video.mp4
-
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
-###Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
+### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one.  You can submit your writeup as markdown or pdf.  [Here](https://github.com/udacity/CarND-Vehicle-Detection/blob/master/writeup_template.md) is a template writeup for this project you can use as a guide and a starting point.  
+### Histogram of Oriented Gradients (HOG)
 
-You're reading it!
+1. Explain how (and identify where in your code) you extracted HOG features from the training images.
 
-###Histogram of Oriented Gradients (HOG)
-
-####1. Explain how (and identify where in your code) you extracted HOG features from the training images.
-
-The code for this step is contained in the first code cell of the IPython notebook (or in lines # through # of the file called `some_file.py`).  
+The code for this step is contained in the 1st through and 5th code cells of the IPython notebook.
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
-![alt text][image1]
+![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
 
-I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
+I then utilized the code provided by Udacity to create a couple example HOG pictures. See below for an example:
 
-Here is an example using the `YCrCb` color space and HOG parameters of `orientations=8`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`:
+![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
 
+I then explored extracting features in code cell 6 and explored different color spaces / parameters in code cell 7. In particular, I tried `HLS` and `YCrCb` because many other students had success and recommended these on the forums. 
 
-![alt text][image2]
+I settled on the following parameters:
 
-####2. Explain how you settled on your final choice of HOG parameters.
+```# Define parameters for feature extraction
+color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 9  # HOG orientations
+pix_per_cell = 6 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+spatial_size = (32, 32) # Spatial binning dimensions
+hist_bins = 32    # Number of histogram bins
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off```
 
-I tried various combinations of parameters and...
+Here is an example of using the above parameters:
 
-####3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
+![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
 
-I trained a linear SVM using...
+2. Explain how you settled on your final choice of HOG parameters.
 
-###Sliding Window Search
+I tried many different variations of HOG parameters before settling on my final choice. In particular, I played around with `HLS` and `YCrCb` by running the test video. I even ran a full test on the final video with both color spaces, and `HLS` always outperformed `YCrCb`.
 
-####1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+I also attempted changing the `orient`, `pix_per_cell`, `spatial_size`, and `hist_bins`. I found that these helped determine how quickly the video was processed and settled on the following parameters. As a note, it took ~1-2 hours each time when processing the video.
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
+```# Define parameters for feature extraction
+color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 9  # HOG orientations
+pix_per_cell = 6 # HOG pixels per cell
+cell_per_block = 2 # HOG cells per block
+hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+spatial_size = (32, 32) # Spatial binning dimensions
+hist_bins = 32    # Number of histogram bins
+spatial_feat = True # Spatial features on or off
+hist_feat = True # Histogram features on or off
+hog_feat = True # HOG features on or off```
 
-![alt text][image3]
+3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-####2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+I trained a linear SVM in code cell 7 using LinearSVC as recommended in the lessons. It took ~45 seconds to train SVC and I achieved ~98%-99% each time. Although, I found that `HLS` and 98% performed stronger than `YCrCb` at 99%. This may be due to overfitting.
 
-Ultimately I searched on two scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+### Sliding Window Search
 
-![alt text][image4]
+1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
+
+I performed a sliding window search in code cell 8. In my final pipeline, I utilized the following parameters:
+
+``` xy_window = [[80, 80], [96, 96], [128, 128]]
+    x_start_stop = [[200, None], [200, None], [412, 1280]]
+    y_start_stop = [[390, 540], [400, 600], [400, 640]]```
+
+2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+
+To optimize performance of pipeline, I decided to ultimately landed on using `HLS` 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. That gave this result:
+
+![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
 ---
 
 ### Video Implementation
 
 ####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-Here's a [link to my video result](./project_video.mp4)
+Here's a [link to my video result](./project_video_output.mp4)
 
 
 ####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections in each frame of the video.  From the positive detections I created a heatmap and then thresholded that map to identify vehicle positions.  I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap.  I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
+In code cells 12 and 13, you can see example code for how I detected false positives. I utilized Udacity's recommendation of creating a heat map and then thresholding that map to identify vehicle positions. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. It is a fair assumption that each blog corresponds to a vehicle, so I constructed bounding boxes to cover the area of each blog detected.
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-### Here are six frames and their corresponding heatmaps:
-
-![alt text][image5]
-
-### Here is the output of `scipy.ndimage.measurements.label()` on the integrated heatmap from all six frames:
-![alt text][image6]
-
-### Here the resulting bounding boxes are drawn onto the last frame in the series:
-![alt text][image7]
-
-
+![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
 
 ---
 
 ###Discussion
 
-####1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
+1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-Here I'll talk about the approach I took, what techniques I used, what worked and why, where the pipeline might fail and how I might improve it if I were going to pursue this project further.  
+When working through the initial stages, I found the pipeline performance to be slow. Even as it stands in my final implementation, this is not nearly close to being a real time system. It takes at least 1.5 hours to process only 50 seconds of video - I can't imagine trying to utilize this pipeline in real time. 
 
+Resources for slow pipeline:
+- https://discussions.udacity.com/t/ways-to-improve-processing-time/237941/32
+
+I also found the final output to be imperfect. Even watching other students videos, there are clearly many false positives and the bounding boxes are never perfect. If I were to take this project further, I would definitely research how to more accuractly detect cars. My final solution was to ignore a large part of the video, which is definitely not suitable for a true self-driving car.
+
+Resources for false positives:
+- https://discussions.udacity.com/t/continuous-false-positives/387288/2
+- https://discussions.udacity.com/t/my-accuracy-is-pretty-high-but-seems-like-i-have-too-many-false-positives/363759/10
+- https://discussions.udacity.com/t/false-negatives/327725/4
+- https://discussions.udacity.com/t/false-positives/242618/4
+- https://discussions.udacity.com/t/way-too-many-false-positives/302929/8
+- https://discussions.udacity.com/t/false-positives-for-shadows/310077
+- https://discussions.udacity.com/t/kitti-images-work-for-training-but-not-detection/243918/4?u=tim.lapinskas
+
+I implemented a bounding box averaging system using deque. Check out [this post](https://discussions.udacity.com/t/wobbly-box-during-video-detection/231487/20?u=tim.lapinskas) to see why I chose to try this out. I found that it increased the number of false positives, so I decided to scrap it in my final video. It would be interesting to attempt implementing this via a class as suggested [here](https://discussions.udacity.com/t/wobbly-box-during-video-detection/231487/4?u=tim.lapinskas).
+
+I am very curious to see how deep learning can be used to detect cars. Based on a couple other students input, it is very doable. Check out these repos to see how Udacity students utilized deep learning for this project: [here](https://github.com/xslittlegrass/CarND-Vehicle-Detection/blob/master/vehicle%20detection.ipynb) and [here](https://github.com/subodh-malgonde/vehicle-detection/blob/master/Vehicle_Detection.ipynb).
+
+[This Medium article](https://medium.com/towards-data-science/vehicle-detection-and-tracking-44b851d70508) also is a great writeup for utilizing CNNs for vehicle detection.
+
+Miscellaneous resources:
+- https://discussions.udacity.com/t/better-explanation-of-scale-parameter-in-hog-sub-sampling/381895
+- https://docs.python.org/2/library/collections.html
