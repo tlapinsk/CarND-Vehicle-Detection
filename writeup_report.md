@@ -128,6 +128,8 @@ I am very curious to see how deep learning can be used to detect cars. Based on 
 
 [This Medium article](https://medium.com/towards-data-science/vehicle-detection-and-tracking-44b851d70508) also is a great writeup for utilizing CNNs for vehicle detection.
 
+Due to being at the end of the term, I am going to submit this project as is. I would love to implement project 4 when I have the time, and will probably get around to it after the course is over or if I have time in the next week. Term 1 has been a blast so far! Very challenging since I've only been programming for ~1 year, but fun none the less.
+
 Miscellaneous resources:
 - https://discussions.udacity.com/t/better-explanation-of-scale-parameter-in-hog-sub-sampling/381895
 - https://docs.python.org/2/library/collections.html
