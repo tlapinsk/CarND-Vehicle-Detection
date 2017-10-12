@@ -81,9 +81,9 @@ I performed a sliding window search in code cell 8. In my final pipeline, I util
 
 To optimize performance of pipeline, I decided to ultimately landed on using `HLS` 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. That gave this result:
 
-![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/car_noncar.png?raw=true "Example 1")
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/classify.png?raw=true "Example 1")
 
-![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/car_noncar.png?raw=true "Example 2")
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/classify2.png?raw=true "Example 2")
 ---
 
 ### Video Implementation
