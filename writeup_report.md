@@ -9,7 +9,7 @@ The goals / steps of this project are the following:
 * Run your pipeline on a video stream (start with the test_video.mp4 and later implement on full project_video.mp4) and create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicles.
 * Estimate a bounding box for vehicles detected.
 
-## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
+## [Rubric Points](https://review.udacity.com/#!/rubrics/513/view)
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
@@ -33,17 +33,17 @@ I then explored extracting features in code cell 6 and explored different color 
 
 I settled on the following parameters:
 
-```# Define parameters for feature extraction
-color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 9  # HOG orientations
-pix_per_cell = 6 # HOG pixels per cell
-cell_per_block = 2 # HOG cells per block
-hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
-spatial_size = (32, 32) # Spatial binning dimensions
-hist_bins = 32    # Number of histogram bins
-spatial_feat = True # Spatial features on or off
-hist_feat = True # Histogram features on or off
-hog_feat = True # HOG features on or off```
+	# Define parameters for feature extraction
+	color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+	orient = 9  # HOG orientations
+	pix_per_cell = 6 # HOG pixels per cell
+	cell_per_block = 2 # HOG cells per block
+	hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+	spatial_size = (32, 32) # Spatial binning dimensions
+	hist_bins = 32    # Number of histogram bins
+	spatial_feat = True # Spatial features on or off
+	hist_feat = True # Histogram features on or off
+	hog_feat = True # HOG features on or off
 
 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -51,17 +51,17 @@ I tried many different variations of HOG parameters before settling on my final 
 
 I also attempted changing the `orient`, `pix_per_cell`, `spatial_size`, and `hist_bins`. I found that these helped determine how quickly the video was processed and settled on the following parameters. As a note, it took ~1-2 hours each time when processing the video.
 
-```# Define parameters for feature extraction
-color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 9  # HOG orientations
-pix_per_cell = 6 # HOG pixels per cell
-cell_per_block = 2 # HOG cells per block
-hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
-spatial_size = (32, 32) # Spatial binning dimensions
-hist_bins = 32    # Number of histogram bins
-spatial_feat = True # Spatial features on or off
-hist_feat = True # Histogram features on or off
-hog_feat = True # HOG features on or off```
+	# Define parameters for feature extraction
+	color_space = 'HLS' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+	orient = 9  # HOG orientations
+	pix_per_cell = 6 # HOG pixels per cell
+	cell_per_block = 2 # HOG cells per block
+	hog_channel = 'ALL' # Can be 0, 1, 2, or "ALL"
+	spatial_size = (32, 32) # Spatial binning dimensions
+	hist_bins = 32    # Number of histogram bins
+	spatial_feat = True # Spatial features on or off
+	hist_feat = True # Histogram features on or off
+	hog_feat = True # HOG features on or off
 
 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -73,9 +73,9 @@ I trained a linear SVM in code cell 7 using LinearSVC as recommended in the less
 
 I performed a sliding window search in code cell 8. In my final pipeline, I utilized the following parameters:
 
-``` xy_window = [[80, 80], [96, 96], [128, 128]]
-    x_start_stop = [[200, None], [200, None], [412, 1280]]
-    y_start_stop = [[390, 540], [400, 600], [400, 640]]```
+	xy_window = [[80, 80], [96, 96], [128, 128]]
+	x_start_stop = [[700, None], [700, None], [700, None]]
+	y_start_stop = [[390, 540], [390, 600], [390, 640]]
 
 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
@@ -88,21 +88,21 @@ To optimize performance of pipeline, I decided to ultimately landed on using `HL
 
 ### Video Implementation
 
-####1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
+1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
 Here's a [link to my video result](./project_video_output.mp4)
 
 
-####2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
+2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
 In code cells 12 and 13, you can see example code for how I detected false positives. I utilized Udacity's recommendation of creating a heat map and then thresholding that map to identify vehicle positions. I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. It is a fair assumption that each blog corresponds to a vehicle, so I constructed bounding boxes to cover the area of each blog detected.
 
 Here's an example result showing the heatmap from a series of frames of video, the result of `scipy.ndimage.measurements.label()` and the bounding boxes then overlaid on the last frame of video:
 
-![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/heatmap2.png?raw=true "Heatmap")
 
 ---
 
-###Discussion
+### Discussion
 
 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
