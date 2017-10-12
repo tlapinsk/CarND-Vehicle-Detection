@@ -77,6 +77,10 @@ I performed a sliding window search in code cell 8. In my final pipeline, I util
 	x_start_stop = [[700, None], [700, None], [700, None]]
 	y_start_stop = [[390, 540], [390, 600], [390, 640]]
 
+I chose the `x_start_stop` parameters because there were no cars to the left that needed detecting. In addition, there were times when the video detected false positives on the lighter colored pavement or in the shadows of the trees. 
+
+`y_start_stop` was chosen due to the `xy_window` parameters.
+
 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 To optimize performance of pipeline, I decided landed on using `HLS` 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. That gave this result:
@@ -110,6 +114,8 @@ Here's an example result showing the heatmap from a series of frames of video, t
 When working through the initial stages, I found the pipeline performance to be slow. Even as it stands in my final implementation, this is not nearly close for deployment in a real time system. It takes at least 1.5 hours to process only 50 seconds of video - I can't imagine trying to utilize this pipeline in real time. 
 
 I even attempted to utilized EC2 instances ($30 worth...) and found that they only processed the video ~20-30 minutes faster. I'm not so sure it was worth the $30, but I had to give it a shot.
+
+The slow processing time may be due to my current hardware setup. I am running a 2010 Macbook Pro with 8gb of RAM and a 500gb SSD. It would be interesting to run this on the latest hardware to see if performance increases. Although, I'm not betting on it due to the slow processing time on the high-powered EC2 instances.
 
 Resources for slow pipeline:
 - https://discussions.udacity.com/t/ways-to-improve-processing-time/237941/32
