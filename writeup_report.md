@@ -108,6 +108,8 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 When working through the initial stages, I found the pipeline performance to be slow. Even as it stands in my final implementation, this is not nearly close to being a real time system. It takes at least 1.5 hours to process only 50 seconds of video - I can't imagine trying to utilize this pipeline in real time. 
 
+I even attempted to utilized EC2 instances ($30 worth...) and found that they only processed the video ~20-30 minutes faster. I'm not so sure it was worth the $30, but I had to give it a shot.
+
 Resources for slow pipeline:
 - https://discussions.udacity.com/t/ways-to-improve-processing-time/237941/32
 
