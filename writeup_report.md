@@ -23,11 +23,11 @@ The code for this step is contained in the 1st through and 5th code cells of the
 
 I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an example of one of each of the `vehicle` and `non-vehicle` classes:
 
-![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/car_noncar.png?raw=true "Car and Non-Car")
 
 I then utilized the code provided by Udacity to create a couple example HOG pictures. See below for an example:
 
-![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/HOG.png?raw=true "HOG")
 
 I then explored extracting features in code cell 6 and explored different color spaces / parameters in code cell 7. In particular, I tried `HLS` and `YCrCb` because many other students had success and recommended these on the forums. 
 
@@ -44,10 +44,6 @@ hist_bins = 32    # Number of histogram bins
 spatial_feat = True # Spatial features on or off
 hist_feat = True # Histogram features on or off
 hog_feat = True # HOG features on or off```
-
-Here is an example of using the above parameters:
-
-![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
 
 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -85,7 +81,9 @@ I performed a sliding window search in code cell 8. In my final pipeline, I util
 
 To optimize performance of pipeline, I decided to ultimately landed on using `HLS` 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. That gave this result:
 
-![alt text](https://github.com/tlapinsk/CarND-Advanced-Lane-Lines/blob/master/example_images/undistort_chessboard.png?raw=true "Undistorted chessboard")
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/car_noncar.png?raw=true "Example 1")
+
+![alt text](https://github.com/tlapinsk/CarND-Vehicle-Detection/blob/master/example_images/car_noncar.png?raw=true "Example 2")
 ---
 
 ### Video Implementation
